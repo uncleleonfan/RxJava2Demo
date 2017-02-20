@@ -10,6 +10,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,7 +25,49 @@ public class MainActivity extends AppCompatActivity {
 //        helloWorldSimple();
 //        helloWorldComplex();
 //        helloWorldPlus();
-        filter();
+//        filter();
+        map();
+
+    }
+
+    private void map() {
+        Observer<Developer> observer = new Observer<Developer>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.d(TAG, "onSubscribe: ");
+            }
+
+            @Override
+            public void onNext(Developer value) {
+                Log.d(TAG, "onNext: "  + value.toString());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, "onError: ");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d(TAG, "onComplete: ");
+            }
+        };
+        
+        Student student = new Student();
+        student.setName("Leon");
+        student.setAge(27);
+        Observable.just(student).map(new Function<Student, Developer>() {
+            @Override
+            public Developer apply(Student student) throws Exception {
+                Log.d(TAG, "apply: " + student.toString());
+                Developer developer = new Developer();
+                developer.setName(student.getName());
+                developer.setAge(student.getAge());
+                developer.setSkill("Android");
+                return developer;
+            }
+        }).subscribe(observer);
+
     }
 
     private void filter() {
