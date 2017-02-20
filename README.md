@@ -145,7 +145,7 @@
     private void filter() {
         //把Consumer可以看做精简版的Observer
         Consumer<String> consumer = new Consumer<String>() {
-            //accept其实就是onNext
+            //accept可以简单的看做onNext
             @Override
             public void accept(String s) throws Exception {
                 Log.d(TAG, "accept: " + s);//这里只能吃上饺子
@@ -173,7 +173,7 @@
 	D/MainActivity: test: 炒粉
 
 # map操作符 #
-map操作符能够完成数据类型的转换。
+map操作符能够完成数据类型的转换。 以下代码展示了一个Student到Developer的转换。
 
     private void map() {
         Observer<Developer> observer = new Observer<Developer>() {
@@ -182,6 +182,7 @@ map操作符能够完成数据类型的转换。
                 Log.d(TAG, "onSubscribe: ");
             }
 
+			//观察者接收到一个Developer
             @Override
             public void onNext(Developer value) {
                 Log.d(TAG, "onNext: "  + value.toString());
@@ -200,7 +201,7 @@ map操作符能够完成数据类型的转换。
         
         Student student = new Student();
         student.setName("Leon");
-        student.setAge(27);
+        student.setAge(18);
         //map操作符，从Student类型转换成Developer
         Observable.just(student).map(new Function<Student, Developer>() {
             @Override
@@ -218,8 +219,8 @@ map操作符能够完成数据类型的转换。
 
 ## 运行结果 ##
 	D/MainActivity: onSubscribe: 
-	D/MainActivity: apply: Student{name='Leon', age=27}
-	D/MainActivity: onNext: Developer{name='Leon', age=27, skill='Android'}
+	D/MainActivity: apply: Student{name='Leon', age=18}
+	D/MainActivity: onNext: Developer{name='Leon', age=18, skill='Android'}
 	D/MainActivity: onComplete: 
 
 
@@ -227,7 +228,7 @@ map操作符能够完成数据类型的转换。
 
 
 # flatmap操作符 #
-flatmap能够完成链式的数据类型的转换和加工。
+flatmap能够链式地完成数据类型的转换和加工。
 
 ## 遍历一个学校中所有班级所有学生 ##
     private void flatmapClassToStudent() {
