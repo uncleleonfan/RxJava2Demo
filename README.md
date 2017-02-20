@@ -1,7 +1,7 @@
 # Demo地址 #
 [RxJava2Demo](RxJava2Demo)
 
-本Demo旨在帮助从未接触过RxJava的同学直接入坑RxJava2，如丝般顺滑，千山万水总是情，留个start行不行？
+本Demo旨在帮助从未接触过RxJava的同学直接入坑RxJava2，如丝般顺滑，千山万水总是情，留个star行不行？
 
 # RxJava & RxAndroid （2.0版）#
 
@@ -22,7 +22,7 @@
 > RxAndroid在RxJava的基础上添加了最少的类使得开发Android应用中的响应式组件更加的容易和自由
 
 ## 特点 ##
-简洁，并不是单单指代码量上的那种简洁，而是逻辑上的简洁，随着程序逻辑变得越来越复杂，它依然能够保持简洁。
+简洁，并不是指代码量上的那种简洁，而是逻辑上的简洁，随着程序逻辑变得越来越复杂，它依然能够保持简洁。
 
 ## Github ##
 * [RxJava](https://github.com/ReactiveX/RxJava)
@@ -222,9 +222,6 @@ map操作符能够完成数据类型的转换。 以下代码展示了一个Stud
 	D/MainActivity: apply: Student{name='Leon', age=18}
 	D/MainActivity: onNext: Developer{name='Leon', age=18, skill='Android'}
 	D/MainActivity: onComplete: 
-
-
-
 
 
 # flatmap操作符 #
