@@ -1,3 +1,8 @@
+# Demo地址 #
+[RxJava2Demo](RxJava2Demo)
+
+本Demo旨在帮助从未接触过RxJava的同学直接入坑RxJava2，如丝般顺滑，千山万水总是情，留个start行不行？
+
 # RxJava & RxAndroid （2.0版）#
 
 ## 定义 ##
@@ -50,6 +55,7 @@
 ## 复杂版本 ##
 
     private void helloWorldComplex() {
+		//Observer可以看做Consumer的完整版
         Observer<String> observer = new Observer<String>() {
 
             //当Observable调用subscribe方法时会回调该方法
@@ -113,6 +119,8 @@
                 Log.d(TAG, "onComplete: ");
             }
         };
+		
+		//创建一个Observable
         Observable<String> observable = Observable.create(new ObservableOnSubscribe<String>() {
 
             @Override
@@ -165,6 +173,8 @@
 	D/MainActivity: test: 炒粉
 
 # map操作符 #
+map操作符能够完成数据类型的转换。
+
     private void map() {
         Observer<Developer> observer = new Observer<Developer>() {
             @Override
@@ -217,9 +227,13 @@
 
 
 # flatmap操作符 #
+flatmap能够完成链式的数据类型的转换和加工。
+
 ## 遍历一个学校中所有班级所有学生 ##
     private void flatmapClassToStudent() {
+
         Observable.fromIterable(new School().getClasses())
+
                 //输入是Class类型，输出是ObservableSource<Student>类型
                 .flatMap(new Function<Class, ObservableSource<Student>>() {
 
@@ -358,7 +372,7 @@
 ## subscribeOn ##
 指定Observable在一个指定的线程调度器上创建。只能指定一次，如果指定多次则以第一次为准
 ## observeOn ##
-指定在事件传递，转换，加工等和最终被观察者接受发生在哪一个线程调度器。可指定多次，每次指定完都在下一步生效。
+指定在事件传递，转换，加工和最终被观察者接受发生在哪一个线程调度器。可指定多次，每次指定完都在下一步生效。
 
 ## 常用线程调度器类型 ##
 * Schedulers.single()  单线程调度器，线程可复用
@@ -421,7 +435,93 @@
 	D/MainActivity: onComplete: main
 
 
+# RxJava与Retrofit集成 #
+我们做一个Demo通过网络请求获取豆瓣电影Top10的列表来展示RxJava和Retrofit的集成的姿势。
+
+![](img/movielistactivity.png)
+
+## Retrofit集成 ##
+
+### 添加依赖 ###
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+	//compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0' 官方adapter仅支持rxjava1.0
+    compile 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+
+### 创建网络接口 ###
+	public interface Api {
+	    @GET("top250")
+	    Observable<MovieBean> listTop250(@Query("start") int start, @Query("count") int count);
+	}
+
+### 实现Api ###
+	
+	public class MovieRetrofit {
+	
+	    private static MovieRetrofit sMovieRetrofit;
+	    private final Api mApi;
+	
+	    public static MovieRetrofit getInstance() {
+	        if (sMovieRetrofit == null) {
+	            synchronized (MovieRetrofit.class) {
+	                if (sMovieRetrofit == null) {
+	                    sMovieRetrofit = new MovieRetrofit();
+	                }
+	            }
+	        }
+	        return sMovieRetrofit;
+	    }
+	
+	    private MovieRetrofit() {
+	        Retrofit retrofit = new Retrofit.Builder().baseUrl("https://api.douban.com/v2/movie/")
+	                .addConverterFactory(GsonConverterFactory.create())
+	                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+	                .build();
+	        mApi = retrofit.create(Api.class);
+	    }
+	
+	    public Api getApi() {
+	        return mApi;
+	    }
+	}
+
+
+### 发送网络请求刷新列表 ###
+	<!--添加网络权限-->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    Observable<MovieBean> movieBeanObservable = MovieRetrofit.getInstance().getApi().listTop250(0, 10);
+    movieBeanObservable.subscribeOn(Schedulers.io())//在io线程池中执行map
+		    //将网络的结果转换成我们要的电影名的列表
+            .map(new Function<MovieBean, List<String>>() {
+                @Override
+                public List<String> apply(MovieBean movieBean) throws Exception {
+                    List<String> array = new ArrayList<String>();
+                    for (int i = 0; i < movieBean.getSubjects().size(); i++) {
+                        String title = movieBean.getSubjects().get(i).getTitle();
+                        array.add(title);
+                    }
+                    return array;
+                }
+            })
+            .observeOn(AndroidSchedulers.mainThread())//在主线程中执行onNext
+            .subscribe(new Observer<List<String>>() {
+					
+			......
+  
+                @Override
+                public void onNext(List<String> value) {
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MovieListActivity.this, android.R.layout.simple_list_item_1, value);
+                    setListAdapter(arrayAdapter);
+                }
+				......
+            });
+
+
+
 # 参考 #
+本人旨在帮助从未接触过RxJava的童鞋直接入坑RxJava2.0，更多使用姿势请自行参考其他资料学习。
+
 * [给Android开发者的Rx详解](http://gank.io/post/560e15be2dca930e00da1083)
 * [RxJava2-Android-Samples](https://github.com/amitshekhariitbhu/RxJava2-Android-Samples)
 * [关于 RxJava 最友好的文章—— RxJava 2.0 全新来袭](http://www.jianshu.com/p/220955eefc1f)
