@@ -1,7 +1,7 @@
 # Demo地址 #
 [RxJava2Demo](RxJava2Demo)
 
-本Demo旨在帮助从未接触过RxJava的同学直接入坑RxJava2，如丝般顺滑，千山万水总是情，留个star行不行？
+本Demo旨在帮助从未接触过RxJava的同学直接入坑RxJava2，如丝般顺滑，万水千山总是情，留个star行不行？
 
 # RxJava & RxAndroid （2.0版）#
 
