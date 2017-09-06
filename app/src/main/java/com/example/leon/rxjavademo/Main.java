@@ -15,7 +15,8 @@ import io.reactivex.schedulers.Schedulers;
 public class Main {
 
     public static void main(String[] args){
-        helloWorldSimple();
+//        helloWorldSimple();
+        helloWorldComplex();
     }
 
 
@@ -202,9 +203,13 @@ public class Main {
         //创建一个观察者
         Observer<String> observer = new Observer<String>() {
 
+            Disposable mDisposable;
+
             //当Observable调用subscribe方法时会回调该方法
             @Override
             public void onSubscribe(Disposable d) {
+//                d.dispose();
+                mDisposable = d;
                 System.out.println("onSubscribe: ");
             }
 
@@ -212,6 +217,9 @@ public class Main {
             @Override
             public void onNext(String value) {
                 System.out.println("onNext: " + value);
+                if(value.equals("!")) {
+                    mDisposable.dispose();
+                }
             }
 
             //这里没有出错，没有被调用
@@ -227,9 +235,8 @@ public class Main {
             }
         };
 
-        Observable.just("Hello World").subscribe(observer);
-
-
+//        Observable.just("Hello World").subscribe(observer);
+        Observable.just("Hello World", "!", "!").subscribe(observer);
     }
 
     private static void helloWorldPlus() {
@@ -260,11 +267,15 @@ public class Main {
                 System.out.println("onComplete: ");
             }
         };
+
+//        Observable.just("Hello World", "I'm Observable").subscribe(observer);
+
         Observable<String> observable = Observable.create(new ObservableOnSubscribe<String>() {
 
             @Override
             public void subscribe(ObservableEmitter<String> e) throws Exception {
                 e.onNext("Hello World");//会调用到观察者的onNext
+                e.onNext("I'm Observable");
                 e.onComplete();//会调用到观察者的onComplete
             }
         });
@@ -278,11 +289,12 @@ public class Main {
         Consumer<String> consumer = new Consumer<String>() {
             @Override
             public void accept(String s) throws Exception {
-                System.out.println(s);
+                System.out.println("accept: " + s);
             }
         };
         //被观察者发出Hello World, 并且指定该事件的消费者为consumer
-        Observable.just("Hello World").subscribe(consumer);
+//        Observable.just("Hello World").subscribe(consumer);
+        Observable.just("Hello World", "Hello World", "Hello World").subscribe(consumer);
     }
 
 }
