@@ -11,21 +11,8 @@ public class Class {
 
     public Class (int id) {
         this.id = id;
-//        mockStudents();
         mockGroups();
     }
-
-    private void mockStudents() {
-        mStudents = new ArrayList<Student>();
-        for (int i = 0; i < 3; i++) {
-            Student student = new Student();
-            student.setAge(18);
-            student.setName("Class" + id + "_" + String.valueOf(i));
-            mStudents.add(student);
-        }
-    }
-
-
 
     private void mockGroups() {
         mGroups = new ArrayList<Group>();

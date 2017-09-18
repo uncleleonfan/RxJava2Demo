@@ -9,6 +9,11 @@ import java.util.List;
 
 public class Group {
 
+    private int id;//小组编号
+
+    private List<Student>  mStudents;//小组内的学生
+
+
     public Group(int id) {
         this.id = id;
         mockStudents();
@@ -17,16 +22,12 @@ public class Group {
     private void mockStudents() {
         mStudents = new ArrayList<Student>();
         for (int i = 0; i < 3; i++) {
-            Student student = new Student();
-            student.setAge(18);
-            student.setName("Group" + id + "_" + String.valueOf(i));
+            String name = "Group" + id + "_" + String.valueOf(i);
+            Student student = new Student(name);
             mStudents.add(student);
         }
     }
 
-    private int id;
-
-    private List<Student>  mStudents;
 
 
     public int getId() {

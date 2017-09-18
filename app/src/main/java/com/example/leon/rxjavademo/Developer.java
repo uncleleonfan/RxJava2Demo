@@ -8,8 +8,6 @@ public class Developer {
 
     private String name;
 
-    private int age;
-
     private String skill;
 
     public String getName() {
@@ -18,14 +16,6 @@ public class Developer {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
     }
 
     public String getSkill() {
@@ -40,7 +30,6 @@ public class Developer {
     public String toString() {
         return "Developer{" +
                 "name='" + name + '\'' +
-                ", age=" + age +
                 ", skill='" + skill + '\'' +
                 '}';
     }
